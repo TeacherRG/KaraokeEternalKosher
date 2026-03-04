@@ -1,6 +1,6 @@
 import React from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router'
-import { useAppSelector } from 'store/hooks'
+import { Routes, Route, Navigate } from 'react-router'
+import { AuthGuard } from 'modules/auth'
 
 import AccountView from 'routes/Account/views/AccountView'
 import LibraryView from 'routes/Library/views/LibraryView'
@@ -14,25 +14,25 @@ const AppRoutes = () => (
     <Route
       path='/library'
       element={(
-        <RequireAuth path='/library' redirectTo='/account'>
+        <AuthGuard path='/library' redirectTo='/account'>
           <LibraryView />
-        </RequireAuth>
+        </AuthGuard>
       )}
     />
     <Route
       path='/queue'
       element={(
-        <RequireAuth path='/queue' redirectTo='/account'>
+        <AuthGuard path='/queue' redirectTo='/account'>
           <QueueView />
-        </RequireAuth>
+        </AuthGuard>
       )}
     />
     <Route
       path='/player'
       element={(
-        <RequireAuth path='/player' redirectTo='/account'>
+        <AuthGuard path='/player' redirectTo='/account'>
           <PlayerView />
-        </RequireAuth>
+        </AuthGuard>
       )}
     />
     <Route
@@ -51,32 +51,3 @@ const AppRoutes = () => (
 )
 
 export default AppRoutes
-
-interface RequireAuthProps {
-  children: React.ReactNode
-  path: string
-  redirectTo: string
-}
-
-const RequireAuth = ({
-  children,
-  path,
-  redirectTo,
-}: RequireAuthProps) => {
-  const { isAdmin, userId } = useAppSelector(state => state.user)
-  const location = useLocation()
-
-  if (path === '/player' && !isAdmin) {
-    return <Navigate to='/' replace />
-  }
-
-  if (userId === null) {
-    // set their originally-desired location in query parameter
-    const params = new URLSearchParams(location.search)
-    params.set('redirect', path)
-
-    return <Navigate to={redirectTo + '?' + params.toString()} replace />
-  }
-
-  return children
-}
