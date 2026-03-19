@@ -2,6 +2,7 @@ import React from 'react'
 import clsx from 'clsx'
 import { NavLink } from 'react-router'
 import Button from 'components/Button/Button'
+import { GuestBadge } from 'modules/auth'
 import styles from './Navigation.css'
 
 const Navigation = React.forwardRef<HTMLDivElement>((_, ref) => (
@@ -36,6 +37,7 @@ const Navigation = React.forwardRef<HTMLDivElement>((_, ref) => (
         />
       )}
     </NavLink>
+    <GuestBadge />
   </div>
 ))
 
